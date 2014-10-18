@@ -1,0 +1,20 @@
+Commandes :
+	  obtenir une variable => brut, format ?
+	  obtenir un groupe => rss, pas de valeurs ?
+	  obtenir les sessions
+	  si plusieurs process , un seul ou plusieur ports ?
+	  changer une variable
+	  obtenir le renderer par défault
+	  obtenir le renderer custom
+
+Interne :
+	format de stockage
+	handlers d'evenements (get/set)
+	déclaration unique (PID, nom, groupes, ids ...) pour exec multiple sans conflit
+	thread safe ?
+
+Renderers :
+	  Widgets selon types de données
+	  Tree
+	  Refresh RT ou one shot
+	  

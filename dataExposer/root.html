@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <script src='http://www.oktail.org:8080/renderer' type='text/javascript'></script>
+  </head>
+  <body onLoad="renderVarList();Varout();">
+<hr>
+<div id="cout"></div>
+<hr>
+	<script type="text/javascript">
+function get_stream(source) 
+{
+    try {
+	var x = new XMLHttpRequest;
+	x.open("GET", source, false);
+	x.send(null);
+	if (x.status != 200) {
+	    throw new Error("HTTP " + x.status);
+	}
+    } catch (e) {
+	alert("Impossible d'ouvrir la source" + e + "\n" + source);
+	return;
+    }
+    stream = x.responseXML;
+    if (stream == null) {
+	alert("Impossible de lire le flux RSS (vide ?)");
+	return;
+    }
+    return stream;
+}
+
+function Varout()
+{
+    var stream = get_stream("http://" + top.location.host + "/variables");
+    var items = stream.getElementsByTagName("item");
+    for (i = 0; i < items.length; i++)
+    {
+	var link = items[i].getElementsByTagName("link")[0].firstChild.data;
+	var id = items[i].getElementsByTagName("title")[0].firstChild.data;
+	var value = items[i].getElementsByTagName("value")[0].firstChild.data;
+	var output = document.getElementById(id);
+	output.value = value
+    }
+    var t = setTimeout(function(){Varout()}, 1000);
+}
+
+function renderVarList()
+{
+    var output = document.getElementById("cout");
+    var cout = "<table>\n";
+    var stream = get_stream("http://" + top.location.host + "/variables");
+    var items = stream.getElementsByTagName("item");
+    for (i = 0; i < items.length; i++)
+    {
+	cout += "<tr>\n";
+	var link = items[i].getElementsByTagName("link")[0].firstChild.data;
+	var id = items[i].getElementsByTagName("title")[0].firstChild.data;
+	var value = items[i].getElementsByTagName("value")[0].firstChild.data;
+	output.value = value
+	cout += "<td>" + id + "</td>";
+	cout += "<td><input id='" + id + "'></td><td><input id='edit_" + id + "' onChange=\"Varin('" + id + "')\"></td>\n";
+	cout += "</tr>\n";
+    }
+    cout += "</table>\n";
+    output.innerHTML = cout;
+}
+
+function Varin(id)
+{
+    var field = document.getElementById("edit_" + id);
+    getData("http://" + top.location.host + "/set_int_" + id + "_" + field.value);
+}
+	</script>
+  </body>
+</html>
